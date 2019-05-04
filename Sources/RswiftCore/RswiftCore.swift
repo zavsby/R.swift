@@ -14,6 +14,8 @@ public struct RswiftCore {
 
   static public func run(_ callInformation: CallInformation) throws {
     do {
+        let date = Date()
+        
       let xcodeproj = try Xcodeproj(url: callInformation.xcodeprojURL)
       let ignoreFile = (try? IgnoreFile(ignoreFileURL: callInformation.rswiftIgnoreURL)) ?? IgnoreFile()
 
@@ -26,14 +28,8 @@ public struct RswiftCore {
 
       let generators: [StructGenerator] = [
         ImageStructGenerator(assetFolders: resources.assetFolders, images: resources.images),
-        ColorStructGenerator(assetFolders: resources.assetFolders),
-        FontStructGenerator(fonts: resources.fonts),
-        SegueStructGenerator(storyboards: resources.storyboards),
-        StoryboardStructGenerator(storyboards: resources.storyboards),
-        NibStructGenerator(nibs: resources.nibs),
-        ReuseIdentifierStructGenerator(reusables: resources.reusables),
         ResourceFileStructGenerator(resourceFiles: resources.resourceFiles),
-        StringsStructGenerator(localizableStrings: resources.localizableStrings),
+        StringsStructGenerator(localizableStrings: resources.localizableStrings)
       ]
 
       let aggregatedResult = AggregatedStructGenerator(subgenerators: generators)

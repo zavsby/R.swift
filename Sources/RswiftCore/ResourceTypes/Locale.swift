@@ -36,7 +36,7 @@ extension Locale {
     if let localeComponent = url.pathComponents.dropLast().last , localeComponent.hasSuffix(".lproj") {
       let lang = localeComponent.replacingOccurrences(of: ".lproj", with: "")
 
-      if lang == "Base" {
+      if lang == "en" {
         self = .base
       }
       else {
@@ -54,7 +54,7 @@ extension Locale {
       return nil
 
     case .base:
-      return "Base"
+      return "en"
 
     case .language(let language):
       return language
