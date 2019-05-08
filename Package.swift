@@ -5,7 +5,8 @@ let package = Package(
   name: "rswift",
   dependencies: [
     .package(url: "https://github.com/kylef/Commander.git", from: "0.8.0"),
-    .package(url: "https://github.com/tomlokhorst/XcodeEdit", from: "2.5.0")
+    .package(url: "https://github.com/tomlokhorst/XcodeEdit", from: "2.5.0"),
+    .package(url: "https://github.com/jpsim/Yams.git", from: "2.0.0")
   ],
   targets: [
     .target(
@@ -14,7 +15,7 @@ let package = Package(
     ),
     .target(
       name: "RswiftCore",
-      dependencies: ["Commander", "XcodeEdit"]
+      dependencies: ["Commander", "XcodeEdit", "Yams"]
     ),
     .testTarget(name: "RswiftCoreTests", dependencies: ["RswiftCore"]),
   ]

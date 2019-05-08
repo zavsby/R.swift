@@ -68,6 +68,7 @@ struct CommanderOptions {
   static let importModules = Option("import", default: "", description: "Add extra modules as import in the generated file, comma seperated")
   static let accessLevel = Option("accessLevel", default: AccessLevel.internalLevel, description: "The access level [public|internal] to use for the generated R-file")
   static let rswiftIgnore = Option("rswiftignore", default: ".rswiftignore", description: "Path to pattern file that describes files that should be ignored")
+  static let config = Option("config", default: ".rswift.yml", description: "Path to configuration YAML file")
   static let inputOutputFilesValidation = Flag("input-output-files-validation", default: true, flag: nil, disabledName: "disable-input-output-files-validation", disabledFlag: nil, description: "Validate input and output files configured in a build phase")
 }
 
@@ -80,10 +81,11 @@ let generate = command(
   CommanderOptions.importModules,
   CommanderOptions.accessLevel,
   CommanderOptions.rswiftIgnore,
+  CommanderOptions.config,
   CommanderOptions.inputOutputFilesValidation,
 
   CommanderArguments.outputPath
-) { importModules, accessLevel, rswiftIgnore, inputOutputFilesValidation, outputPath in
+) { importModules, accessLevel, rswiftIgnore, config, inputOutputFilesValidation, outputPath in
 
   let processInfo = ProcessInfo()
 
@@ -110,6 +112,7 @@ let generate = command(
 
   let outputURL = URL(fileURLWithPath: outputPath)
   let rswiftIgnoreURL = URL(fileURLWithPath: sourceRootPath).appendingPathComponent(rswiftIgnore, isDirectory: false)
+  let configURL = URL(fileURLWithPath: sourceRootPath).appendingPathComponent(config, isDirectory: false)
   let modules = importModules
     .components(separatedBy: ",")
     .map { $0.trimmingCharacters(in: CharacterSet.whitespaces) }
@@ -158,6 +161,7 @@ let generate = command(
   let callInformation = CallInformation(
     outputURL: outputURL,
     rswiftIgnoreURL: rswiftIgnoreURL,
+    configURL: configURL,
 
     accessLevel: accessLevel,
     imports: Set(modules),

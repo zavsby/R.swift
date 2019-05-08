@@ -32,11 +32,11 @@ enum Locale {
 }
 
 extension Locale {
-  init(url: URL) {
+  init(url: URL, base: String) {
     if let localeComponent = url.pathComponents.dropLast().last , localeComponent.hasSuffix(".lproj") {
       let lang = localeComponent.replacingOccurrences(of: ".lproj", with: "")
 
-      if lang == "en" {
+      if lang == base {
         self = .base
       }
       else {
@@ -54,7 +54,7 @@ extension Locale {
       return nil
 
     case .base:
-      return "en"
+      return "Base"
 
     case .language(let language):
       return language

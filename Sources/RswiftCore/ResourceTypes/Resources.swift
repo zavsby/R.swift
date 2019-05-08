@@ -25,7 +25,7 @@ struct Resources {
     
   let reusables: [Reusable]
 
-  init(resourceURLs: [URL], fileManager: FileManager) {
+  init(resourceURLs: [URL], fileManager: FileManager, config: Config) {
     
     var assetFolders = [AssetFolder]()
     var images = [Image]()
@@ -36,22 +36,24 @@ struct Resources {
     var localizableStrings = [LocalizableStrings]()
     
     resourceURLs.forEach { url in
-      if let nib = tryResourceParsing({ try Nib(url: url) }) {
+      if config.enabledGenerators.contains(.nib) || config.enabledGenerators.contains(.reuseIdentifier), let nib = tryResourceParsing({ try Nib(url: url) }) {
         nibs.append(nib)
-      } else if let image = tryResourceParsing({ try Image(url: url) }) {
+      } else if config.enabledGenerators.contains(.image) || config.enabledGenerators.contains(.resourceFile), let image = tryResourceParsing({ try Image(url: url) }) {
         images.append(image)
-        if let resourceFile = tryResourceParsing({ try ResourceFile(url: url) }) {
+        if config.enabledGenerators.contains(.resourceFile), let resourceFile = tryResourceParsing({ try ResourceFile(url: url) }) {
             resourceFiles.append(resourceFile)
         }
-      } else if let asset = tryResourceParsing({ try AssetFolder(url: url, fileManager: fileManager) }) {
+      } else if config.enabledGenerators.contains(.image) || config.enabledGenerators.contains(.color),
+        let asset = tryResourceParsing({ try AssetFolder(url: url, fileManager: fileManager) }) {
         assetFolders.append(asset)
-      } else if let font = tryResourceParsing({ try Font(url: url) }) {
+      } else if config.enabledGenerators.contains(.font), let font = tryResourceParsing({ try Font(url: url) }) {
         fonts.append(font)
-      } else if let storyboard = tryResourceParsing({ try Storyboard(url: url) }) {
+      } else if config.enabledGenerators.contains(.storyboard) || config.enabledGenerators.contains(.segue) || config.enabledGenerators.contains(.reuseIdentifier),
+        let storyboard = tryResourceParsing({ try Storyboard(url: url) }) {
         storyboards.append(storyboard)
-      } else if let resourceFile = tryResourceParsing({ try ResourceFile(url: url) }) {
+      } else if config.enabledGenerators.contains(.resourceFile), let resourceFile = tryResourceParsing({ try ResourceFile(url: url) }) {
         resourceFiles.append(resourceFile)
-      } else if let localizableString = tryResourceParsing({ try LocalizableStrings(url: url) }) {
+      } else if config.enabledGenerators.contains(.strings), let localizableString = tryResourceParsing({ try LocalizableStrings(url: url, config: config) }) {
         localizableStrings.append(localizableString)
       }
     }

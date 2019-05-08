@@ -22,7 +22,7 @@ struct LocalizableStrings : WhiteListedExtensionsResourceType {
     self.dictionary = dictionary
   }
 
-  init(url: URL) throws {
+  init(url: URL, config: Config) throws {
     try LocalizableStrings.throwIfUnsupportedExtension(url.pathExtension)
 
     guard let filename = url.filename else {
@@ -30,7 +30,7 @@ struct LocalizableStrings : WhiteListedExtensionsResourceType {
     }
 
     // Get locale from url (second to last component)
-    let locale = Locale(url: url)
+    let locale = Locale(url: url, base: config.baseLocale)
 
     // Check to make sure url can be parsed as a dictionary
     guard let nsDictionary = NSDictionary(contentsOf: url) else {
